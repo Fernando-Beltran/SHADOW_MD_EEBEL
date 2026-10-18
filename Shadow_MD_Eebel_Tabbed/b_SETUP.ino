@@ -17,6 +17,10 @@ void setup()
     
     output.reserve(200); // Reserve 200 bytes for the output string
 
+    //Setup for the controllers (abstraction layer, see ControllerConfig.h)
+    PS3NavFoot->begin();
+    PS3NavDome->begin();
+
     //Setup for PS3
     PS3NavFoot->attachOnInit(onInitPS3NavFoot); // onInitPS3NavFoot is called upon a new connection
     Serial.print(F("\r\nInitFootNav"));

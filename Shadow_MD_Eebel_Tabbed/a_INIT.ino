@@ -1731,6 +1731,12 @@ int marcDuinoBaudRate = 9600; // Set the baud rate for the Syren motor controlle
 #include <PS3BT.h>
 #include <usbhub.h>
 
+// Controller abstraction: pick your controller in ControllerConfig.h
+#include "ControllerConfig.h"
+#include "DroidController.h"
+#include "PS3NavController.h"
+#include "DroidPad.h"          // includes JoyConController.h only when USE_JOYCON is set
+
 // Satisfy IDE, which only needs to see the include statment in the ino.
 #ifdef dobogusinclude
 #include <spi4teensy3.h>
@@ -1817,8 +1823,28 @@ Sabertooth *SyR=new Sabertooth(SYREN_ADDR, Serial2);
 ///////Setup for USB and Bluetooth Devices////////////////////////////
 USB Usb;
 BTD Btd(&Usb);
-PS3BT *PS3NavFoot=new PS3BT(&Btd);
-PS3BT *PS3NavDome=new PS3BT(&Btd);
+
+// --- CONTROLLER ABSTRACTION ------------------------------------------------------------
+// Everything below this comment is the only structural change this fork makes. The rest of
+// the sketch keeps calling PS3NavFoot and PS3NavDome exactly as it always has: the pointers
+// still answer getButtonPress(), getAnalogHat(), PS3NavigationConnected and the rest.
+// Which physical controller is behind them is decided in ControllerConfig.h.
+
+#ifdef USE_PS3_NAV
+  PS3NavController navFootImpl(&Btd, "FOOT", LED1);
+  PS3NavController navDomeImpl(&Btd, "DOME", LED2);
+  DroidPad  footPad(&navFootImpl, &navFootImpl);
+  DroidPad  domePad(&navDomeImpl, &navDomeImpl);
+#else
+  JoyConController joyFootImpl(&Btd, JOYCON_LEFT,  "FOOT", JOYCON_PAIRING_MODE);
+  JoyConController joyDomeImpl(&Btd, JOYCON_RIGHT, "DOME", JOYCON_PAIRING_MODE);
+  DroidPad  footPad(&joyFootImpl);
+  DroidPad  domePad(&joyDomeImpl);
+#endif
+
+DroidPad *PS3NavFoot = &footPad;
+DroidPad *PS3NavDome = &domePad;
+// --- END CONTROLLER ABSTRACTION ---------------------------------------------------------
 
 //Used for PS3 Fault Detection
 uint32_t msgLagTime = 0;

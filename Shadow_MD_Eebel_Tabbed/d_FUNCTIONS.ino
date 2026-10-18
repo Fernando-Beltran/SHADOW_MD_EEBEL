@@ -3,7 +3,7 @@
 //           footDrive Motor Control Section
 // =======================================================================================
 
-boolean ps3FootMotorDrive(PS3BT* myPS3 = PS3NavFoot)
+boolean ps3FootMotorDrive(DroidPad* myPS3 = PS3NavFoot)
 {
   int stickSpeed = 0;
   int turnnum = 0;
@@ -254,7 +254,7 @@ void footMotorDrive()
 //           domeDrive Motor Control Section
 // =======================================================================================
 
-int ps3DomeDrive(PS3BT* myPS3 = PS3NavDome)
+int ps3DomeDrive(DroidPad* myPS3 = PS3NavDome)
 {
     int domeRotationSpeed = 0;
       
@@ -361,7 +361,7 @@ void domeDrive()
 //                               Toggle Control Section
 // =======================================================================================
 
-void ps3ToggleSettings(PS3BT* myPS3 = PS3NavFoot)
+void ps3ToggleSettings(DroidPad* myPS3 = PS3NavFoot)
 {
 
     // enable / disable drive stick
@@ -388,7 +388,12 @@ void ps3ToggleSettings(PS3BT* myPS3 = PS3NavFoot)
     }
     
     // Enable and Disable Overspeed
+    // A Joy-Con has no L3, so there the toggle is stick click + ZL (PS + L2 to the sketch)
+    #ifdef USE_JOYCON
+    if (myPS3->getButtonPress(PS) && myPS3->getButtonPress(L2) && isStickEnabled)
+    #else
     if (myPS3->getButtonPress(L3) && myPS3->getButtonPress(L1) && isStickEnabled)
+    #endif
     {
       
        if ((millis() - previousSpeedToggleMillis) > 1000)
@@ -4076,6 +4081,11 @@ boolean readUSB()
 {
   
      Usb.Task();
+
+     // Controller abstraction: refresh both controllers once per loop, right after
+     // Usb.Task(). This is the only line the main loop gains.
+     PS3NavFoot->update();
+     PS3NavDome->update();
      
     //The more devices we have connected to the USB or BlueTooth, the more often Usb.Task need to be called to eliminate latency.
     if (PS3NavFoot->PS3NavigationConnected) 

@@ -15,7 +15,7 @@ Edit `ControllerConfig.h`. That is the only file you need to touch.
 //#define USE_JOYCON       // two Joy-Cons, left for the feet, right for the dome
 ```
 
-For the first run with new Joy-Cons, set `JOYCON_PAIRING_MODE` to `true`, upload, then hold the small sync button on the Joy-Con rail until the lights run. Once it connects, set it back to `false` and upload again. From then on it reconnects by itself.
+For the first run with new Joy-Cons, set `JOYCON_PAIRING_MODE` to `true`, upload, then hold the small sync button on one Joy-Con rail until the lights run. **Pair one Joy-Con at a time**: the library stops pairing once any controller is connected, so reset the Mega and pair the other one the same way. Then set the flag back to `false` and upload again. From then on they reconnect by themselves when you press a button; after a disconnect, wait about ten seconds before pressing. On connection the player LEDs alternate outer and inner for two seconds, then settle on LED 1 (left) or LED 2 (right).
 
 ## What actually changed in the sketch
 
@@ -69,14 +69,16 @@ L3 is the one that goes, because in the stock map almost nothing uses it: every 
 |---|---|---|
 | Original, untouched, older library | 56,548 | 4,738 (57%) |
 | This fork, PS3 Nav, older library | 55,812 | 5,318 (64%) |
-| This fork, Joy-Con, library 1.7.0 | 55,452 | 5,391 (65%) |
+| This fork, Joy-Con, library 1.7.0 | 56,774 | 5,485 (66%) |
 
 Each build is measured with the library it actually needs (see Requirements). The PS3 Nav build comes out slightly smaller in flash than the original. RAM goes up by about 600 bytes, which on a Mega leaves roughly 2.8 KB free. That is enough, but it is worth knowing if you have already added things of your own to this sketch.
 
 ## What is tested and what is not
 
 - Both configurations compile clean. **Neither has been run on a droid yet.**
-- The Joy-Con implementation handles stick auto centring on connection, the different button map of each half, and grip orientation.
+- `JoyConController.h` has passed the bench test with two real Joy-Cons connected at once: full scale on both sticks, all nine buttons on each half, link lag under 25 ms. The same file is used here.
+- The Joy-Con implementation handles the switch to full report mode, stick centring on connection, drift recentring while the stick rests, detecting which half connected, the different button map of each half, and grip orientation.
+- **Still open:** the foot and dome controllers are filled in connection order. If the right Joy-Con connects first it becomes the foot controller. Wake the left one first until the sketch routes by detected side.
 - There is a bench test sketch, [`BenchTest`](https://github.com/Fernando-Beltran/ShadowMDLite/tree/main/JoyCon/BenchTest), that reads controllers and prints what it sees without driving anything. Run that first, with the droid powered down.
 
 Do not take this to an event until you have driven it in your workshop.

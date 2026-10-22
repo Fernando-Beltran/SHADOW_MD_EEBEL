@@ -1844,6 +1844,13 @@ BTD Btd(&Usb);
 
 DroidPad *PS3NavFoot = &footPad;
 DroidPad *PS3NavDome = &domePad;
+
+#ifdef USE_JOYCON
+  #include "JoyConPairing.h"
+  // Pairing without editing or re-uploading: first boot, Minus+Capture / Plus+Home held
+  // for 5 s, or three resets in a row. See JoyConPairing.h.
+  JoyConPairing joyPairing(&Btd, &joyFootImpl, &joyDomeImpl);
+#endif
 // --- END CONTROLLER ABSTRACTION ---------------------------------------------------------
 
 //Used for PS3 Fault Detection

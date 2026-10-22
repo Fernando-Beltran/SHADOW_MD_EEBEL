@@ -3766,7 +3766,13 @@ void onInitPS3NavFoot()
       output += btAddress;
     #endif
     
+    // Joy-Cons: only a Joy-Con paired during a pairing session can connect at all, so the
+    // pairing is the gate. The MAC lists hold PS3 Nav addresses and would drop every Joy-Con.
+    #ifdef USE_JOYCON
+    if (true)
+    #else
     if (btAddress == PS3ControllerFootMac || btAddress == PS3ControllerBackupFootMac)
+    #endif
     {
         
           #ifdef SHADOW_DEBUG
@@ -3806,7 +3812,13 @@ void onInitPS3NavDome()
     isSecondaryPS3NavigatonInitialized = true;
     badPS3Data = 0;
     
+    // Joy-Cons: only a Joy-Con paired during a pairing session can connect at all, so the
+    // pairing is the gate. The MAC lists hold PS3 Nav addresses and would drop every Joy-Con.
+    #ifdef USE_JOYCON
+    if (true)
+    #else
     if (btAddress == PS3ControllerDomeMAC || btAddress == PS3ControllerBackupDomeMAC)
+    #endif
     {
         
           #ifdef SHADOW_DEBUG
@@ -4086,6 +4098,17 @@ boolean readUSB()
      // Usb.Task(). With Joy-Cons this also puts the left half on the foot and the
      // right half on the dome, whichever connected first.
      DroidPad::updatePair(*PS3NavFoot, *PS3NavDome);
+
+     #ifdef USE_JOYCON
+       // While pairing, the droid does not move and the controllers are not read.
+       joyPairing.update();
+       if (joyPairing.active())
+       {
+           if (!isFootMotorStopped) { ST->stop(); isFootMotorStopped = true; footDriveSpeed = 0; }
+           if (!isDomeMotorStopped) { SyR->stop(); isDomeMotorStopped = true; }
+           return false;
+       }
+     #endif
      
     //The more devices we have connected to the USB or BlueTooth, the more often Usb.Task need to be called to eliminate latency.
     if (PS3NavFoot->PS3NavigationConnected) 

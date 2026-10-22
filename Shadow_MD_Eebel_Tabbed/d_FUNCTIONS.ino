@@ -4083,9 +4083,9 @@ boolean readUSB()
      Usb.Task();
 
      // Controller abstraction: refresh both controllers once per loop, right after
-     // Usb.Task(). This is the only line the main loop gains.
-     PS3NavFoot->update();
-     PS3NavDome->update();
+     // Usb.Task(). With Joy-Cons this also puts the left half on the foot and the
+     // right half on the dome, whichever connected first.
+     DroidPad::updatePair(*PS3NavFoot, *PS3NavDome);
      
     //The more devices we have connected to the USB or BlueTooth, the more often Usb.Task need to be called to eliminate latency.
     if (PS3NavFoot->PS3NavigationConnected) 

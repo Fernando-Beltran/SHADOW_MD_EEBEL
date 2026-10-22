@@ -78,7 +78,8 @@ Each build is measured with the library it actually needs (see Requirements). Th
 - Both configurations compile clean. **Neither has been run on a droid yet.**
 - `JoyConController.h` has passed the bench test with two real Joy-Cons connected at once: full scale on both sticks, all nine buttons on each half, link lag under 25 ms. The same file is used here.
 - The Joy-Con implementation handles the switch to full report mode, stick centring on connection, drift recentring while the stick rests, detecting which half connected, the different button map of each half, and grip orientation.
-- **Still open:** the foot and dome controllers are filled in connection order. If the right Joy-Con connects first it becomes the foot controller. Wake the left one first until the sketch routes by detected side.
+- The order does not matter: whichever Joy-Con wakes up first, the left half drives the foot and the right half the dome (`DroidPad::updatePair()`). If only the right one is connected, it goes to the dome and the foot stays still. Tested on the bench with the right half connecting first.
+- If a Joy-Con has been used on a Switch it may stop reconnecting to the droid. Pair it with the droid twice: a Joy-Con keeps two pairing records and both must point to the dongle.
 - There is a bench test sketch, [`BenchTest`](https://github.com/Fernando-Beltran/ShadowMDLite/tree/main/JoyCon/BenchTest), that reads controllers and prints what it sees without driving anything. Run that first, with the droid powered down.
 
 Do not take this to an event until you have driven it in your workshop.

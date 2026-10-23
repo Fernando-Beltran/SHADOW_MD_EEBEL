@@ -6,6 +6,8 @@ This is Eebel's Shadow MD, unchanged in behaviour, with one structural addition:
 
 **Why.** Sony stopped making the Nav years ago. The buttons work, the sticks drift, and replacements get more expensive and harder to find every year. A single Joy-Con is the closest thing still in production: one hand, pocket size, analog stick, USB-C charging, and it speaks the same classic Bluetooth HID that the Navs use, so no new hardware is needed. Same Mega ADK, same Bluetooth dongle.
 
+**Already running your own Shadow MD with Navs?** [`MIGRATING_TO_JOYCON.md`](MIGRATING_TO_JOYCON.md) walks you through adding Joy-Cons to your sketch, step by step, without changing anything else.
+
 ## How to switch controller
 
 Edit `ControllerConfig.h`. That is the only file you need to touch.
